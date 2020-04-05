@@ -1,0 +1,21 @@
+{
+  "name": "oada-abalonemail",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "μservice for sending emails",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Alex <alex@layton.in>",
+  "license": "ISC",
+  "dependencies": {
+    "@oada/oada-jobs": "github:oada/oada-jobs",
+    "@sendgrid/mail": "^6.5.1",
+    "axios": "^0.19.2",
+    "bluebird": "^3.7.2",
+    "dotenv": "^8.2.0",
+    "handlebars": "^4.7.2",
+    "nconf": "^0.10.0"
+  }
+}
