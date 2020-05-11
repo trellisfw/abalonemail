@@ -13,6 +13,6 @@ if [[ ! -d "node_modules" ]]; then
   yarn install
 fi
 
-echo "npm run start -- --config=\"/oada-srvc-docker-config.js\""
-npm run start -- --config=/oada-srvc-docker-config.js
+echo "npm run start""
+npm run start
 

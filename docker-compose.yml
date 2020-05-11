@@ -32,8 +32,6 @@ services:
       - arango_net
     volumes:
       - ./services-available/abalonemail:/code/abalonemail
-      - ./oada-core/libs:/code/libs
-      - ./oada-srvc-docker-config.js:/oada-srvc-docker-config.js
     environment:
       - NODE_TLS_REJECT_UNAUTHORIZED
       - NODE_ENV=${NODE_ENV:-development}

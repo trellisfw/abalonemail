@@ -1,44 +1,38 @@
 # abalonemail
 
 A microservice to send emails in response to job queue items using sendgrid.
-
-
-Example task object:
+Example job queue item:
 
 ```json
 {
-    "to": "test@qlever.io",
-    "replyTo": "",
-    "cc": "",
-    "bcc": "",
-    "subject": "Test",
-
-    // Can supply text, html, or both
-    "text": "This is an email to {{ name }}}",
-    "html": "<p>This is an email to {{ name }}}<p>",
-    "templatePath": "/parsed", // Optional path to data to use as context for handlebars templates
-
-    "headers": {
-        "X-FOOBAR": "BAZ"
-    }
-
-    "attachments": [
-        // Can either give just a path or an object of optional properties
-        "/pdf",
-        {
-            "path": "/foo/png", // required
-            "filename": "cat.png", // defaults to attachment_i where i is array index
-            "disposition": "attachment", // attachment or inline (defaults to attachment)
-            "content_id": "cat", // id for use with inline attachments
-            "type": "application/png" // defaults to what OADA says is the content type
-        }
-    ]
+  "service": "abalonemail",
+  "type": "email",
+  "config": {
+    "multiple": false,
+    "from": "john@example.com",
+    "to": {
+      "name": "Andrew Balmos",
+      "email": "abalmos@gmail.com"
+    },
+    "subject": "Test mail",
+    "text": "Test!",
+    "html": "<h1>Test!</h1>"
+  }
 }
 ```
 
-The from address and the sendgrid API key are set with `.env` or via `nconf`.
+Checkout @oada/formats for a more detailed description of the format.
 
-## Installation:
+The from address and the sendgrid API key are set with `.env`. For example:
+
+```env
+domain=oada.example.org
+token=ajxhcjkal7y83hdsjkhc8l2
+apiKey=aksdjca83d.asdfkxjjc93cSDFUsDaAfaj23FEVhSDvksljsadv0CdADs3V0g84rjksdf
+```
+
+## Installation
+
 ```bash
 cd /path/to/your/oada-srvc-docker
 cd services-available
@@ -48,7 +42,9 @@ ln -s ../services-available/abalonemail .
 ```
 
 ## Overriding defaults for production
+
 Using `z_tokens` method from `oada-srvc-docker`, the following docker-compose entry overrides configs for production:
+
 ```docker-compose
   abalonemail:
     environment:
