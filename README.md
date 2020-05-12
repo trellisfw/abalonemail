@@ -11,8 +11,8 @@ Example job queue item:
     "multiple": false,
     "from": "john@example.com",
     "to": {
-      "name": "Andrew Balmos",
-      "email": "abalmos@gmail.com"
+      "name": "Billy bob",
+      "email": "bb@exampe.org"
     },
     "subject": "Test mail",
     "templateData": {
