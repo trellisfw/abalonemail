@@ -18,6 +18,7 @@ import { config } from 'dotenv';
 import debug from 'debug';
 import { setApiKey, send } from '@sendgrid/mail';
 import Handlebars from 'handlebars';
+import Cache from 'timed-cache'
 // import axios from 'axios';
 
 import { Service, Json } from '@oada/jobs';
@@ -39,6 +40,15 @@ setApiKey(apiKey);
 
 const service = new Service('abalonemail', domain, token, 10);
 
+/**
+ * How often to allow emailing the same email (in ms)
+ * @todo get this from the service config
+ */
+const rateLimit = 24 * 60 * 60 * 1000
+
+// TODO: This cache is probably overkill
+const sent = new Cache({defaultTtl: rateLimit})
+
 service.on(
   'email',
   10 * 1000,
@@ -51,6 +61,12 @@ service.on(
     assertEmailConfig(config);
 
     log.trace('confirmed', 'Job config confirmed');
+
+    // Check rate-limit?
+    if (sent.get(config.to)) {
+      log.info('cancelled', 'Email cancelled due to rate limit')
+      throw new Error(`Rate limit of ${rateLimit} on ${config.to}`)
+    }
 
     let { text, html } = config;
 
@@ -85,6 +101,7 @@ service.on(
       },
       config.multiple ?? true
     );
+    sent.put(config.to, true)
 
     return { statusCode: r[0].statusCode };
   }
