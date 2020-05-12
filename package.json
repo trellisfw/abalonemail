@@ -6,7 +6,7 @@
   "repository": "https://github.com/trellisfw/abalonemail",
   "license": "Apache-2.0",
   "scripts": {
-    "start": "ts-node src/index.ts"
+    "start": "ts-node --files src/index.ts"
   },
   "author": "Alex <alex@layton.in>",
   "contributors": [

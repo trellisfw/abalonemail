@@ -17,6 +17,7 @@ import { strict as assert } from 'assert';
 import { config } from 'dotenv';
 import debug from 'debug';
 import { setApiKey, send } from '@sendgrid/mail';
+import {AttachmentData} from '@sendgrid/helpers/classes/attachment'
 import Handlebars from 'handlebars';
 import Cache from 'timed-cache'
 // import axios from 'axios';
@@ -70,9 +71,8 @@ service.on(
 
     let { text, html } = config;
 
-    type Attachment = typeof config.attachments[0] & { content: string };
-    const attachments: Attachment[] = [];
-    for (const { content, ...rest } of config.attachments) {
+    const attachments: AttachmentData[] = [];
+    for (const { content, ...rest } of config.attachments || []) {
       // TODO: Support base64 encoding binary attachments
       assert(typeof content === 'string', 'Binary attachments not supported');
       attachments.push({ content, ...rest });
@@ -83,8 +83,8 @@ service.on(
       info('Fetching template');
       const { templateData: data } = config;
 
-      text = text ?? Handlebars.compile(text)(data);
-      html = html ?? Handlebars.compile(html)(data);
+      text = text && Handlebars.compile(text)(data);
+      html = html && Handlebars.compile(html)(data);
     }
 
     info(`Sending email for task ${jobId}`);
@@ -95,9 +95,9 @@ service.on(
         to: config.to,
         replyTo: config.replyTo,
         subject: config.subject,
-        text,
+        text: text as string,
         html,
-        attachments,
+        //attachments,
       },
       config.multiple ?? true
     );
