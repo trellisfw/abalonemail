@@ -15,8 +15,18 @@ Example job queue item:
       "email": "abalmos@gmail.com"
     },
     "subject": "Test mail",
+    "templateData": {
+      "foo": "bar"
+    },
     "text": "Test!",
-    "html": "<h1>Test!</h1>"
+    "html": "<h1>Test: {{ foo }}</h1>",
+    "attachments": [
+      {
+        "content": "RXhhbXBsZSBkYXRh",
+        "filename": "test.dat",
+        "type": "plain/text"
+      }
+    ]
   }
 }
 ```

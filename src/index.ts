@@ -66,7 +66,7 @@ service.on(
     // Check rate-limit?
     if (sent.get(config.to)) {
       log.info('cancelled', 'Email cancelled due to rate limit')
-      throw new Error(`Rate limit of ${rateLimit} on ${config.to}`)
+      throw new Error(`Rate limit of ${rateLimit} ms on ${config.to}`)
     }
 
     let { text, html } = config;
@@ -97,7 +97,7 @@ service.on(
         subject: config.subject,
         text: text as string,
         html,
-        //attachments,
+        attachments,
       },
       config.multiple ?? true
     );
