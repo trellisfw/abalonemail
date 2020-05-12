@@ -17,7 +17,7 @@ import { strict as assert } from 'assert';
 import { config } from 'dotenv';
 import debug from 'debug';
 import { setApiKey, send } from '@sendgrid/mail';
-// import Handlebars from 'handlebars';
+import Handlebars from 'handlebars';
 // import axios from 'axios';
 
 import { Service, Json } from '@oada/jobs';
@@ -42,33 +42,34 @@ const service = new Service('abalonemail', domain, token, 10);
 service.on(
   'email',
   10 * 1000,
-  async (job, { jobId, log /* oada */ }): Promise<Json> => {
+  async (job, { jobId, log }): Promise<Json> => {
     info('μservice triggered');
 
     log.info('started', 'Job started');
 
-    const config = job.config;
+    const { config } = job;
     assertEmailConfig(config);
 
     log.trace('confirmed', 'Job config confirmed');
 
-    let text = config.text || '';
-    let html = config.html;
+    let { text, html } = config;
 
-    /*
-     * Note: You have @oada/client at `context.oada`. It is already connected,
-     * concurrency controlled, and correctly tokened to your user.
-     */
-    /*
-    if (config.templatePath) {
-      info('Fetching template');
-      const { data } = await oada.get({ path: config.templatePath });
-      trace(data);
-
-      text = Handlebars.compile(data)(config.templateParams);
-      htlm = Handlebars.compile(data)(config.templateParams);
+    type Attachment = typeof config.attachments[0] & { content: string };
+    const attachments: Attachment[] = [];
+    for (const { content, ...rest } of config.attachments) {
+      // TODO: Support base64 encoding binary attachments
+      assert(typeof content === 'string', 'Binary attachments not supported');
+      attachments.push({ content, ...rest });
     }
-    */
+
+    // Fill out template
+    if (config.templateData) {
+      info('Fetching template');
+      const { templateData: data } = config;
+
+      text = text ?? Handlebars.compile(text)(data);
+      html = html ?? Handlebars.compile(html)(data);
+    }
 
     info(`Sending email for task ${jobId}`);
     log.debug('sending', 'Sending email');
@@ -78,9 +79,9 @@ service.on(
         to: config.to,
         replyTo: config.replyTo,
         subject: config.subject,
-        text: text,
-        html: html,
-        // attachments: config.attachments,
+        text,
+        html,
+        attachments,
       },
       config.multiple ?? true
     );
