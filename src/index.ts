@@ -22,8 +22,10 @@ import Handlebars from 'handlebars';
 import Cache from 'timed-cache'
 // import axios from 'axios';
 
-import { Service, Json } from '@oada/jobs';
-import { assert as assertEmailConfig } from '@oada/types/trellis/service/abalonemail/config/email';
+import { Service } from '@oada/jobs';
+import EmailConfig, { assert as assertEmailConfig } from '@oada/types/trellis/service/abalonemail/config/email';
+
+import { RulesWorker } from '@oada/rules-worker'
 
 config();
 const domain = process.env.domain;
@@ -35,11 +37,13 @@ assert(apiKey, 'set ENV `apiKey` to the service sendgrid API key');
 
 // const trace = debug('abalonemail:trace');
 const info = debug('abalonemail:info');
+const trace = debug('abalonemail:trace');
 // const error = debug('abalonemail:error');
 
 setApiKey(apiKey);
 
-const service = new Service('abalonemail', domain, token, 10);
+const name = 'abalonemail'
+const service = new Service(name, domain, token, 10);
 
 /**
  * How often to allow emailing the same email (in ms)
@@ -50,10 +54,11 @@ const rateLimit = 24 * 60 * 60 * 1000
 // TODO: This cache is probably overkill
 const sent = new Cache({defaultTtl: rateLimit})
 
+const actionName = 'email'
 service.on(
-  'email',
+  actionName,
   10 * 1000,
-  async (job, { jobId, log }): Promise<Json> => {
+  async (job, { jobId, log }) => {
     info('μservice triggered');
 
     log.info('started', 'Job started');
@@ -63,54 +68,91 @@ service.on(
 
     log.trace('confirmed', 'Job config confirmed');
 
-    // Check rate-limit?
-    if (sent.get(config.to)) {
-      log.info('cancelled', 'Email cancelled due to rate limit')
-      throw new Error(`Rate limit of ${rateLimit} ms on ${config.to}`)
-    }
+    const res = await email(config)
 
-    let { text, html } = config;
+    info(`Sent email for job ${jobId}`)
 
-    const attachments: AttachmentData[] = [];
-    for (const { content, ...rest } of config.attachments || []) {
-      // TODO: Support base64 encoding binary attachments
-      assert(typeof content === 'string', 'Binary attachments not supported');
-      attachments.push({ content, ...rest });
-    }
+    return res
+});
 
-    // Fill out template
-    if (config.templateData) {
-      info('Fetching template');
-      const { templateData: data } = config;
-
-      text = text && Handlebars.compile(text)(data);
-      html = html && Handlebars.compile(html)(data);
-    }
-
-    info(`Sending email for task ${jobId}`);
-    log.debug('sending', 'Sending email');
-    const r = await send(
-      {
-        from: config.from,
-        to: config.to,
-        replyTo: config.replyTo,
-        subject: config.subject,
-        text: text as string,
-        html,
-        attachments,
-      },
-      config.multiple ?? true
-    );
-    sent.put(config.to, true)
-
-    return { statusCode: r[0].statusCode };
+async function email(config: EmailConfig, log = { info, debug: trace }) {
+  // Check rate-limit?
+  if (sent.get(config.to)) {
+    log.info('cancelled', 'Email cancelled due to rate limit')
+    throw new Error(`Rate limit of ${rateLimit} ms on ${config.to}`)
   }
-);
+
+  let { text, html } = config;
+
+  const attachments: AttachmentData[] = [];
+  for (const { content, ...rest } of config.attachments || []) {
+    // TODO: Support base64 encoding binary attachments
+    assert(typeof content === 'string', 'Binary attachments not supported');
+    attachments.push({ content, ...rest });
+  }
+
+  // Fill out template
+  if (config.templateData) {
+    info('Fetching template');
+    const { templateData: data } = config;
+
+    text = text && Handlebars.compile(text)(data);
+    html = html && Handlebars.compile(html)(data);
+  }
+
+  log.debug('sending', 'Sending email');
+  const r = await send(
+    {
+      from: config.from,
+      to: config.to,
+      replyTo: config.replyTo,
+      subject: config.subject,
+      text: text as string,
+      html,
+      attachments,
+    },
+    config.multiple ?? true
+  );
+  sent.put(config.to, true)
+
+  return { statusCode: r[0].statusCode };
+}
 
 service.start().catch((e: unknown) => {
   console.log('ERROR');
   console.error(e);
 });
+
+// Create worker for rules engine
+// Just sends a test email for now
+new RulesWorker({
+  name,
+  // TODO: This seems off?
+  conn: service.getClient(domain).clone(token),
+  actions: [{
+    name: actionName,
+    service: name,
+    type: 'application/json',
+    /**
+     * @todo parameterize the email
+     */
+    description: 'send as attachement in an email to test@qlever.io',
+    async callback(item) {
+      const content = Buffer.from(JSON.stringify(item)).toString('base64')
+      await email({
+        from: `noreply@${domain}`,
+        to: 'test@qlever.io',
+        subject: 'Test email',
+        text: 'Please see attached.',
+        attachments: [{
+          filename: 'test.json',
+          type: 'application/json',
+          content
+        }]
+      })
+    }
+  }]
+})
 
 process.on('unhandledRejection', (error) => {
   console.error('unhandledRejection', error);

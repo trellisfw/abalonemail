@@ -49,6 +49,18 @@
     p-queue "^6.4.0"
     ws "^7.2.3"
 
+"@oada/client@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@oada/client/-/client-1.0.4.tgz#e00ccf2bc67e6b7c4ddbe33ba022c6dccb6e34ce"
+  integrity sha512-lPddepKajzj2j2r+O84dJ5v4U+Td9NuB/+0dU0qhEhnpnam+1IkZHD46MzMmrZLilrD3lyviK84O+jZhLBgYrw==
+  dependencies:
+    "@oada/types" "^1.0.6"
+    debug "^4.1.1"
+    isomorphic-ws "^4.0.1"
+    ksuid "^1.2.0"
+    p-queue "^6.4.0"
+    ws "^7.2.3"
+
 "@oada/formats@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@oada/formats/-/formats-1.1.2.tgz#b2a87911339e1ba49689609f2e1572579d48da56"
@@ -76,6 +88,32 @@
     p-queue "^6.3.0"
     p-timeout "^3.2.0"
     tiny-json-http "^7.1.2"
+
+"@oada/list-lib@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@oada/list-lib/-/list-lib-1.0.1.tgz#5280cdea00a90df5acc45bd81a0dc797fdee8dd6"
+  integrity sha512-qFL3hTNP6EveCv9QGPyNn7HiYNRAxZJE8wi/URZKhyHGleLra/ZP+LTAmEEHix1/T/4KHTY6t1FOkd+qUG/NsQ==
+  dependencies:
+    "@oada/client" "^1.0.4"
+    "@oada/types" "^1.0.10"
+    "@types/bluebird" "^3.5.32"
+    "@types/debug" "^4.1.5"
+    bluebird "^3.7.2"
+    debug "^4.1.1"
+    json-pointer "^0.6.0"
+    jsonschema8 "^1.1.0"
+    object-assign-deep "^0.4.0"
+
+"@oada/rules-worker@git+ssh://git@github.com:Qlever-LLC/rules-worker.git":
+  version "1.0.0"
+  resolved "git+ssh://git@github.com:Qlever-LLC/rules-worker.git#e502d56e888048075eb9bfdd63837e93a704a3c4"
+  dependencies:
+    "@oada/list-lib" "^1.0.1"
+    "@oada/types" "^1.0.10"
+    ajv "^6.12.4"
+    bluebird "^3.7.2"
+    debug "^4.1.1"
+    jsonschema8 "^1.1.0"
 
 "@oada/types@^1.0.10", "@oada/types@^1.0.6":
   version "1.0.10"
@@ -120,7 +158,7 @@
   resolved "https://registry.yarnpkg.com/@types/assert/-/assert-1.4.7.tgz#8add0d031e16e7ad87282f1b55c30813b4632cbd"
   integrity sha512-CcLrcLy+7tWiGCXsWht6boJeTfq7I9uO0trcw2ohLfIXsG6N+OMfsfjIxIE51tfijUbnPQvqBUCwYDGinE+V2g==
 
-"@types/bluebird@^3.5.31":
+"@types/bluebird@^3.5.31", "@types/bluebird@^3.5.32":
   version "3.5.32"
   resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.32.tgz#381e7b59e39f010d20bbf7e044e48f5caf1ab620"
   integrity sha512-dIOxFfI0C+jz89g6lQ+TqhGgPQ0MxSnh/E4xuC0blhFtyW269+mPG5QeLgbdwst/LvdP8o1y0o/Gz5EHXLec/g==
@@ -207,6 +245,16 @@ ajv@^6.10.0, ajv@^6.10.2, ajv@^6.12.0, ajv@^6.12.2:
   version "6.12.2"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.2.tgz#c629c5eced17baf314437918d2da88c99d5958cd"
   integrity sha512-k+V+hzjm5q/Mr8ef/1Y9goCmlsK4I6Sm74teeyGvFk1XrOsbsKLjEdrvny42CZ+a8sXbk8KWpY/bDwS+FLL2UQ==
+  dependencies:
+    fast-deep-equal "^3.1.1"
+    fast-json-stable-stringify "^2.0.0"
+    json-schema-traverse "^0.4.1"
+    uri-js "^4.2.2"
+
+ajv@^6.12.4:
+  version "6.12.4"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.4.tgz#0614facc4522127fa713445c6bfd3ebd376e2234"
+  integrity sha512-eienB2c9qVQs2KWexhkrdMLVDoIQCz5KSeLxwg9Lzk4DOfBtIK9PQwwufcsn1jjGuf9WZmqPMbGxOzfcuphJCQ==
   dependencies:
     fast-deep-equal "^3.1.1"
     fast-json-stable-stringify "^2.0.0"
@@ -677,7 +725,7 @@ follow-redirects@1.5.10:
   dependencies:
     debug "=3.1.0"
 
-foreach@^2.0.5:
+foreach@^2.0.4, foreach@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/foreach/-/foreach-2.0.5.tgz#0bee005018aeb260d0a3af3ae658dd0136ec1b99"
   integrity sha1-C+4AUBiusmDQo6865ljdATbsG5k=
@@ -910,6 +958,13 @@ js-yaml@^3.13.1:
     argparse "^1.0.7"
     esprima "^4.0.0"
 
+json-pointer@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/json-pointer/-/json-pointer-0.6.0.tgz#8e500550a6aac5464a473377da57aa6cc22828d7"
+  integrity sha1-jlAFUKaqxUZKRzN32leqbMIoKNc=
+  dependencies:
+    foreach "^2.0.4"
+
 json-schema-traverse@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/json-schema-traverse/-/json-schema-traverse-0.4.1.tgz#69f6a87d9513ab8bb8fe63bdb0979c448e684660"
@@ -919,6 +974,13 @@ json-stable-stringify-without-jsonify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz#9db7b59496ad3f3cfef30a75142d2d930ad72651"
   integrity sha1-nbe1lJatPzz+8wp1FC0tkwrXJlE=
+
+jsonschema8@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/jsonschema8/-/jsonschema8-1.1.0.tgz#62c2c0df13860604adae07b4861fc0f7d9604801"
+  integrity sha512-PSkyU2AsaBPapquVqlHJQKq2ZvSXztwObDRio+aDCZOLJipC4LsxhKp3fsJWiB0OCYym2sHLg2XfVwKliq1jkw==
+  dependencies:
+    typescript "^3.7.5"
 
 ksuid@^1.2.0:
   version "1.2.0"
@@ -1004,6 +1066,11 @@ neo-async@^2.6.0:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.1.tgz#ac27ada66167fa8849a6addd837f6b189ad2081c"
   integrity sha512-iyam8fBuCUpWeKPGpaNMetEocMt364qkCsfL9JuhjXX6dRnguRVOfk2GZaDpPjcOKiiXCPINZC1GczQ7iTq3Zw==
+
+object-assign-deep@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/object-assign-deep/-/object-assign-deep-0.4.0.tgz#43505d3679abb9686ab359b97ac14cc837a9d143"
+  integrity sha512-54Uvn3s+4A/cMWx9tlRez1qtc7pN7pbQ+Yi7mjLjcBpWLlP+XbSHiHbQW6CElDiV4OvuzqnMrBdkgxI1mT8V/Q==
 
 object-inspect@^1.7.0:
   version "1.7.0"
@@ -1386,6 +1453,11 @@ type-fest@^0.8.1:
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-0.8.1.tgz#09e249ebde851d3b1e48d27c105444667f17b83d"
   integrity sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==
+
+typescript@^3.7.5:
+  version "3.9.7"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.7.tgz#98d600a5ebdc38f40cb277522f12dc800e9e25fa"
+  integrity sha512-BLbiRkiBzAwsjut4x/dsibSTB6yWpwT5qWmC2OfuCg3GgVQCSgMs4vEctYPhsaGtd0AeuuHMkjZ2h2WG8MSzRw==
 
 typescript@^3.8.3, typescript@^3.9.2:
   version "3.9.5"

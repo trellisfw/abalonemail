@@ -14,6 +14,7 @@
   ],
   "dependencies": {
     "@oada/jobs": "^2.0.0",
+    "@oada/rules-worker": "git+ssh://git@github.com:Qlever-LLC/rules-worker.git",
     "@oada/types": "^1.0.6",
     "@sendgrid/mail": "^7.1.0",
     "@types/assert": "^1.4.6",
