@@ -18,23 +18,23 @@
 import { strict as assert } from 'assert';
 import { config } from 'dotenv';
 import debug from 'debug';
-import { setApiKey, send } from '@sendgrid/mail';
+import mail from '@sendgrid/mail';
 import type { AttachmentData } from '@sendgrid/helpers/classes/attachment'
 import Handlebars from 'handlebars';
 import Cache from 'timed-cache'
 // import axios from 'axios';
 
 import { Service } from '@oada/jobs';
-import EmailConfig, { assert as assertEmailConfig } from '@oada/types/trellis/service/abalonemail/config/email';
+import EmailConfig, { assert as assertEmailConfig } from '@oada/types/trellis/service/abalonemail/config/email.js';
 
 import { RulesWorker } from '@trellisfw/rules-worker'
 
 config();
-const domain = process.env.domain;
+const domain = process.env.DOMAIN ?? process.env.domain;
 assert(domain, 'Set ENV `domain` to domain storing the service configuration');
-const token = process.env.token;
+const token = process.env.TOKEN ?? process.env.token;
 assert(token, 'Set ENV `token` to the service token');
-const apiKey = process.env.apiKey;
+const apiKey = process.env.API_KEY ?? process.env.apiKey;
 assert(apiKey, 'set ENV `apiKey` to the service sendgrid API key');
 
 // const trace = debug('abalonemail:trace');
@@ -42,7 +42,7 @@ const info = debug('abalonemail:info');
 const trace = debug('abalonemail:trace');
 // const error = debug('abalonemail:error');
 
-setApiKey(apiKey);
+mail.setApiKey(apiKey);
 
 const name = 'abalonemail'
 const service = new Service(name, domain, token, 10);
@@ -103,7 +103,7 @@ async function email(config: EmailConfig, log = { info, debug: trace }) {
   }
 
   log.debug('sending', 'Sending email');
-  const r = await send(
+  const r = await mail.send(
     {
       from: config.from,
       to: config.to,
