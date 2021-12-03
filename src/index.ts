@@ -1,4 +1,6 @@
-/* Copyright 2020 Qlever LLC
+/**
+ * @license
+ * Copyright 2020 Qlever LLC
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -17,7 +19,7 @@ import { strict as assert } from 'assert';
 import { config } from 'dotenv';
 import debug from 'debug';
 import { setApiKey, send } from '@sendgrid/mail';
-import {AttachmentData} from '@sendgrid/helpers/classes/attachment'
+import type { AttachmentData } from '@sendgrid/helpers/classes/attachment'
 import Handlebars from 'handlebars';
 import Cache from 'timed-cache'
 // import axios from 'axios';
@@ -25,7 +27,7 @@ import Cache from 'timed-cache'
 import { Service } from '@oada/jobs';
 import EmailConfig, { assert as assertEmailConfig } from '@oada/types/trellis/service/abalonemail/config/email';
 
-import { RulesWorker } from '@oada/rules-worker'
+import { RulesWorker } from '@trellisfw/rules-worker'
 
 config();
 const domain = process.env.domain;
@@ -136,8 +138,8 @@ new RulesWorker({
     /**
      * @todo parameterize the email
      */
-    description: 'send as attachement in an email to test@qlever.io',
-    async callback(item) {
+    description: 'send as attachment in an email to test@qlever.io',
+    async callback(item: unknown) {
       const content = Buffer.from(JSON.stringify(item)).toString('base64')
       await email({
         from: `noreply@${domain}`,
