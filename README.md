@@ -58,8 +58,7 @@ Using `z_tokens` method from `oada-srvc-docker`, the following docker-compose en
 ```docker-compose
   abalonemail:
     environment:
-      - token=aproductiontokentouse
-      - domain=your.trellis.domain
-      - emailKey=thekeyforsendgridsapi
-      - from=demo@some.domain
+      - TOKEN=aproductiontokentouse
+      - DOMAIN=your.trellis.domain
+      - API_KEY=thekeyforsendgridsapi
 ```
