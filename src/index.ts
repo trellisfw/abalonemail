@@ -16,6 +16,7 @@
  */
 
 import { strict as assert } from 'assert';
+import { connect } from '@oada/client';
 import { config } from 'dotenv';
 import debug from 'debug';
 import mail from '@sendgrid/mail';
@@ -27,7 +28,7 @@ import Cache from 'timed-cache'
 import { Service } from '@oada/jobs';
 import EmailConfig, { assert as assertEmailConfig } from '@oada/types/trellis/service/abalonemail/config/email.js';
 
-import { RulesWorker } from '@trellisfw/rules-worker'
+//import { RulesWorker } from '@trellisfw/rules-worker'
 
 config();
 const domain = process.env.DOMAIN ?? process.env.domain;
@@ -44,14 +45,20 @@ const trace = debug('abalonemail:trace');
 
 mail.setApiKey(apiKey);
 
-const name = 'abalonemail'
-const service = new Service(name, domain, token, 10);
+const name = 'abalonemail';
+const oada = await connect({
+  domain: `https://${domain}`,
+  token,
+  concurrency: 10
+})
+const service = new Service({oada, name});//, domain, token, 10);
 
 /**
  * How often to allow emailing the same email (in ms)
  * @todo get this from the service config
  */
-const rateLimit = 24 * 60 * 60 * 1000
+const rateLimit = 0;
+//const rateLimit = 24 * 60 * 60 * 1000
 
 // TODO: This cache is probably overkill
 const sent = new Cache({defaultTtl: rateLimit})
@@ -116,6 +123,7 @@ async function email(config: EmailConfig, log = { info, debug: trace }) {
     config.multiple ?? true
   );
   sent.put(config.to, true)
+  console.log('RRRRRRRRRRRRRRRRR', r)
 
   return { statusCode: r[0].statusCode };
 }
@@ -127,6 +135,7 @@ service.start().catch((e: unknown) => {
 
 // Create worker for rules engine
 // Just sends a test email for now
+/*
 new RulesWorker({
   name,
   // TODO: This seems off?
@@ -135,9 +144,6 @@ new RulesWorker({
     name: actionName,
     service: name,
     type: 'application/json',
-    /**
-     * @todo parameterize the email
-     */
     description: 'send as attachment in an email to test@qlever.io',
     async callback(item: unknown) {
       const content = Buffer.from(JSON.stringify(item)).toString('base64')
@@ -155,6 +161,7 @@ new RulesWorker({
     }
   }]
 })
+*/
 
 process.on('unhandledRejection', (error) => {
   console.error('unhandledRejection', error);

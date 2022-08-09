@@ -15,7 +15,8 @@
     "Andrew Balmos <abalmos@purdue.edu>"
   ],
   "dependencies": {
-    "@oada/jobs": "^2.0.9",
+    "@oada/client": "^4.1.1",
+    "@oada/jobs": "^4.1.2",
     "@oada/types": "^1.7.0",
     "@sendgrid/helpers": "^7.6.0",
     "@sendgrid/mail": "^7.6.0",
