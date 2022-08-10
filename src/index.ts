@@ -15,123 +15,120 @@
  * limitations under the License.
  */
 
-import { strict as assert } from 'assert';
-import { connect } from '@oada/client';
-import { config } from 'dotenv';
+import { config } from './config.js';
+
+import { strict as assert } from 'node:assert';
+
+import type { AttachmentData } from '@sendgrid/helpers/classes/attachment';
+import Cache from 'timed-cache';
+import Handlebars from 'handlebars';
 import debug from 'debug';
 import mail from '@sendgrid/mail';
-import type { AttachmentData } from '@sendgrid/helpers/classes/attachment'
-import Handlebars from 'handlebars';
-import Cache from 'timed-cache'
-// import axios from 'axios';
 
+import EmailConfig, {
+  assert as assertEmailConfig,
+} from '@oada/types/trellis/service/abalonemail/config/email.js';
 import { Service } from '@oada/jobs';
-import EmailConfig, { assert as assertEmailConfig } from '@oada/types/trellis/service/abalonemail/config/email.js';
+import { connect } from '@oada/client';
 
-//import { RulesWorker } from '@trellisfw/rules-worker'
+const oada = config.get('oada');
+const apiKey = config.get('sendgrid.key');
 
-config();
-const domain = process.env.DOMAIN ?? process.env.domain;
-assert(domain, 'Set ENV `domain` to domain storing the service configuration');
-const token = process.env.TOKEN ?? process.env.token;
-assert(token, 'Set ENV `token` to the service token');
-const apiKey = process.env.API_KEY ?? process.env.apiKey;
-assert(apiKey, 'set ENV `apiKey` to the service sendgrid API key');
-
-// const trace = debug('abalonemail:trace');
 const info = debug('abalonemail:info');
+const error = debug('abalonemail:error');
 const trace = debug('abalonemail:trace');
-// const error = debug('abalonemail:error');
 
 mail.setApiKey(apiKey);
 
 const name = 'abalonemail';
-const oada = await connect({
-  domain: `https://${domain}`,
-  token,
-  concurrency: 10
-})
-const service = new Service({oada, name});//, domain, token, 10);
+const conn = await connect(oada);
+const service = new Service({
+  name,
+  oada: conn,
+});
 
 /**
  * How often to allow emailing the same email (in ms)
  * @todo get this from the service config
  */
-const rateLimit = 0;
-//const rateLimit = 24 * 60 * 60 * 1000
+const rateLimit = 24 * 60 * 60 * 1000;
 
-// TODO: This cache is probably overkill
-const sent = new Cache({defaultTtl: rateLimit})
+// ???: This cache is probably overkill
+const sent = new Cache({ defaultTtl: rateLimit });
 
-const actionName = 'email'
-service.on(
-  actionName,
-  10 * 1000,
-  async (job, { jobId, log }) => {
-    info('μservice triggered');
+const actionName = 'email';
+service.on(actionName, 10 * 1000, async (job, { jobId, log }) => {
+  info('μservice triggered');
 
-    log.info('started', 'Job started');
+  void log.info('started', 'Job started');
 
-    const { config } = job;
-    assertEmailConfig(config);
+  const { config: jobConfig } = job;
+  assertEmailConfig(jobConfig);
 
-    log.trace('confirmed', 'Job config confirmed');
+  void log.trace('confirmed', 'Job config confirmed');
 
-    const res = await email(config)
+  const response = await email(jobConfig);
 
-    info(`Sent email for job ${jobId}`)
+  info('Sent email for job %s', jobId);
 
-    return res
+  return response;
 });
 
-async function email(config: EmailConfig, log = { info, debug: trace }) {
+async function email(
+  {
+    multiple,
+    from,
+    to,
+    replyTo,
+    subject,
+    text,
+    html,
+    attachments: attach = [],
+    templateData,
+  }: EmailConfig,
+  // eslint-disable-next-line unicorn/no-object-as-default-parameter
+  log = { info, debug: trace }
+) {
   // Check rate-limit?
-  if (sent.get(config.to)) {
-    log.info('cancelled', 'Email cancelled due to rate limit')
-    throw new Error(`Rate limit of ${rateLimit} ms on ${config.to}`)
+  if (sent.get(to)) {
+    log.info('cancelled', 'Email cancelled due to rate limit');
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
+    throw new Error(`Rate limit of ${rateLimit} ms on ${to}`);
   }
 
-  let { text, html } = config;
-
   const attachments: AttachmentData[] = [];
-  for (const { content, ...rest } of config.attachments || []) {
-    // TODO: Support base64 encoding binary attachments
+  for (const { content, ...rest } of attach) {
+    // FIXME: Support base64 encoding binary attachments
     assert(typeof content === 'string', 'Binary attachments not supported');
     attachments.push({ content, ...rest });
   }
 
   // Fill out template
-  if (config.templateData) {
+  if (templateData) {
     info('Fetching template');
-    const { templateData: data } = config;
-
-    text = text && Handlebars.compile(text)(data);
-    html = html && Handlebars.compile(html)(data);
+    text = text && Handlebars.compile(text)(templateData);
+    html = html && Handlebars.compile(html)(templateData);
   }
 
   log.debug('sending', 'Sending email');
   const r = await mail.send(
     {
-      from: config.from,
-      to: config.to,
-      replyTo: config.replyTo,
-      subject: config.subject,
-      text: text as string,
+      from,
+      to,
+      replyTo,
+      subject,
+      text: text!,
       html,
       attachments,
     },
-    config.multiple ?? true
+    multiple ?? true
   );
-  sent.put(config.to, true)
-  console.log('RRRRRRRRRRRRRRRRR', r)
+  sent.put(to, true);
 
   return { statusCode: r[0].statusCode };
 }
 
-service.start().catch((e: unknown) => {
-  console.log('ERROR');
-  console.error(e);
-});
+await service.start();
 
 // Create worker for rules engine
 // Just sends a test email for now
@@ -163,6 +160,6 @@ new RulesWorker({
 })
 */
 
-process.on('unhandledRejection', (error) => {
-  console.error('unhandledRejection', error);
+process.on('unhandledRejection', (err) => {
+  error('unhandledRejection', err);
 });
