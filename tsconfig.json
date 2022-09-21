@@ -1,8 +1,8 @@
 {
   "extends": "@tsconfig/node16",
   "compilerOptions": {
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "node16",
+    "moduleResolution": "node16",
     "removeComments": true,
     "importHelpers": true,
     "strict": true,

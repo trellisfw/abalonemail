@@ -19,13 +19,15 @@ import { config } from './config.js';
 
 import { strict as assert } from 'node:assert';
 
-import type { AttachmentData } from '@sendgrid/helpers/classes/attachment';
+import type { AttachmentData } from '@sendgrid/helpers/classes/attachment.js';
 import Cache from 'timed-cache';
 import Handlebars from 'handlebars';
 import debug from 'debug';
 import mail from '@sendgrid/mail';
 
-import EmailConfig, {
+import {
+  type Email,
+  type default as EmailConfig,
   assert as assertEmailConfig,
 } from '@oada/types/trellis/service/abalonemail/config/email.js';
 import { Service } from '@oada/jobs';
@@ -34,9 +36,12 @@ import { connect } from '@oada/client';
 const oada = config.get('oada');
 const apiKey = config.get('sendgrid.key');
 
-const info = debug('abalonemail:info');
-const error = debug('abalonemail:error');
-const trace = debug('abalonemail:trace');
+const log = {
+  info: debug('abalonemail:info'),
+  debug: debug('abalonemail:debug'),
+  error: debug('abalonemail:error'),
+  trace: debug('abalonemail:trace'),
+};
 
 mail.setApiKey(apiKey);
 
@@ -54,22 +59,22 @@ const service = new Service({
 const rateLimit = 24 * 60 * 60 * 1000;
 
 // ???: This cache is probably overkill
-const sent = new Cache({ defaultTtl: rateLimit });
+const sent = new Cache<Email | Email[], true>({ defaultTtl: rateLimit });
 
 const actionName = 'email';
-service.on(actionName, 10 * 1000, async (job, { jobId, log }) => {
-  info('μservice triggered');
+service.on(actionName, 10 * 1000, async (job, { jobId, log: jobLog }) => {
+  log.debug('μservice triggered');
 
-  void log.info('started', 'Job started');
+  void jobLog.info('started', 'Job started');
 
   const { config: jobConfig } = job;
   assertEmailConfig(jobConfig);
 
-  void log.trace('confirmed', 'Job config confirmed');
+  void jobLog.trace('confirmed', 'Job config confirmed');
 
   const response = await email(jobConfig);
 
-  info('Sent email for job %s', jobId);
+  log.info('Sent email for job %s', jobId);
 
   return response;
 });
@@ -87,11 +92,11 @@ async function email(
     templateData,
   }: EmailConfig,
   // eslint-disable-next-line unicorn/no-object-as-default-parameter
-  log = { info, debug: trace }
+  jobLog = { info: log.info, debug: log.trace }
 ) {
   // Check rate-limit?
   if (sent.get(to)) {
-    log.info('cancelled', 'Email cancelled due to rate limit');
+    jobLog.info('cancelled', 'Email cancelled due to rate limit');
     // eslint-disable-next-line @typescript-eslint/no-base-to-string
     throw new Error(`Rate limit of ${rateLimit} ms on ${to}`);
   }
@@ -105,12 +110,12 @@ async function email(
 
   // Fill out template
   if (templateData) {
-    info('Fetching template');
+    log.info('Fetching template');
     text = text && Handlebars.compile(text)(templateData);
     html = html && Handlebars.compile(html)(templateData);
   }
 
-  log.debug('sending', 'Sending email');
+  jobLog.debug('sending', 'Sending email');
   const r = await mail.send(
     {
       from,
@@ -160,6 +165,6 @@ new RulesWorker({
 })
 */
 
-process.on('unhandledRejection', (err) => {
-  error('unhandledRejection', err);
+process.on('unhandledRejection', (error) => {
+  log.error(error, 'unhandledRejection');
 });
