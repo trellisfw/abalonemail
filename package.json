@@ -20,7 +20,7 @@
     "@oada/types": "^3.2.1",
     "@sendgrid/helpers": "^7.7.0",
     "@sendgrid/mail": "^7.7.0",
-    "convict": "^6.2.3",
+    "convict": "^6.2.4",
     "debug": "^4.3.4",
     "dotenv": "^16.0.2",
     "handlebars": "^4.7.7",
