@@ -17,6 +17,8 @@
 
 import { config } from './config.js';
 
+import '@oada/pino-debug';
+
 import { strict as assert } from 'node:assert';
 
 import type { AttachmentData } from '@sendgrid/helpers/classes/attachment.js';
@@ -30,6 +32,7 @@ import {
   type default as EmailConfig,
   assert as assertEmailConfig,
 } from '@oada/types/trellis/service/abalonemail/config/email.js';
+import { Counter } from '@oada/lib-prom';
 import { Service } from '@oada/jobs';
 import { connect } from '@oada/client';
 
@@ -42,6 +45,12 @@ const log = {
   error: debug('abalonemail:error'),
   trace: debug('abalonemail:trace'),
 };
+
+const emailCounter = new Counter({
+  name: 'sent_emails_total',
+  help: 'Total number of emails sent',
+  labelNames: ['from'] as const,
+});
 
 mail.setApiKey(apiKey);
 
@@ -79,6 +88,18 @@ service.on(actionName, 10 * 1000, async (job, { jobId, log: jobLog }) => {
   return response;
 });
 
+function emailToString(email: Email): string {
+  if (typeof email === 'string') {
+    return email;
+  }
+
+  if (email.name) {
+    return `"${email.name}" <${email.email}>`;
+  }
+
+  return email.email;
+}
+
 async function email(
   {
     multiple,
@@ -110,7 +131,7 @@ async function email(
 
   // Fill out template
   if (templateData) {
-    log.info('Fetching template');
+    log.debug('Fetching template');
     text = text && Handlebars.compile(text)(templateData);
     html = html && Handlebars.compile(html)(templateData);
   }
@@ -129,6 +150,18 @@ async function email(
     multiple ?? true
   );
   sent.put(to, true);
+
+  log.info(
+    {
+      from,
+      to,
+      replyTo,
+      subject,
+      multiple,
+    },
+    'Email sent successfully'
+  );
+  emailCounter.inc({ from: emailToString(from) });
 
   return { statusCode: r[0].statusCode };
 }
@@ -165,6 +198,6 @@ new RulesWorker({
 })
 */
 
-process.on('unhandledRejection', (error) => {
-  log.error(error, 'unhandledRejection');
+process.on('unhandledRejectionMonitor', (error) => {
+  log.error({ error }, 'unhandledRejection');
 });

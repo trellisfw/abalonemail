@@ -31,6 +31,7 @@ export const config = convict({
       doc: 'OADA API token',
       format: String,
       default: 'god',
+      sensitive: true,
       env: 'TOKEN',
       arg: 'token',
     },
@@ -46,7 +47,8 @@ export const config = convict({
     key: {
       doc: 'Sendgrid API key',
       format: String,
-      default: '',
+      default: null as unknown as string,
+      sensitive: true,
       env: 'API_KEY',
       arg: 'api-key',
     },
