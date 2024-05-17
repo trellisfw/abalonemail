@@ -113,7 +113,7 @@ async function email(
     templateData,
   }: EmailConfig,
   // eslint-disable-next-line unicorn/no-object-as-default-parameter
-  jobLog = { info: log.info, debug: log.trace }
+  jobLog = { info: log.info, debug: log.trace },
 ) {
   // Check rate-limit?
   if (sent.get(to)) {
@@ -132,8 +132,8 @@ async function email(
   // Fill out template
   if (templateData) {
     log.debug('Fetching template');
-    text = text && Handlebars.compile(text)(templateData);
-    html = html && Handlebars.compile(html)(templateData);
+    text &&= Handlebars.compile(text)(templateData);
+    html &&= Handlebars.compile(html)(templateData);
   }
 
   jobLog.debug('sending', 'Sending email');
@@ -147,7 +147,7 @@ async function email(
       html,
       attachments,
     },
-    multiple ?? true
+    multiple ?? true,
   );
   sent.put(to, true);
 
@@ -159,7 +159,7 @@ async function email(
       subject,
       multiple,
     },
-    'Email sent successfully'
+    'Email sent successfully',
   );
   emailCounter.inc({ from: emailToString(from) });
 
