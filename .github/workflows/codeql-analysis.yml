@@ -11,7 +11,21 @@
 #
 name: CodeQL
 
-permissions: read-all
+permissions:
+  security-events: write
+  id-token: write
+  packages: read
+  actions: read
+  checks: read
+  contents: read
+  deployments: read
+  issues: read
+  discussions: read
+  pages: read
+  pull-requests: read
+  repository-projects: read
+  statuses: read
+  attestations: read
 
 on:
   push:
