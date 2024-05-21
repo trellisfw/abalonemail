@@ -28,6 +28,7 @@ permissions:
   repository-projects: read
   security-events: read
   statuses: read
+  attestations: read
 
 on:
   push:
