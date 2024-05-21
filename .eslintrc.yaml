@@ -45,13 +45,11 @@ overrides:
       - plugin:github/typescript
       - plugin:import/typescript
       - xo-typescript
-      - prettier
       - plugin:prettier/recommended
     parserOptions:
       ecmaVersion: 2020
       project: ./tsconfig*.json
     rules:
-      'prettier/prettier': off
       '@typescript-eslint/naming-convention':
         [
           error,
@@ -95,7 +93,6 @@ overrides:
       '@typescript-eslint/consistent-type-definitions': [warn, interface]
 
 rules:
-  'prettier/prettier': off
   notice/notice:
     - error
     - template: |
