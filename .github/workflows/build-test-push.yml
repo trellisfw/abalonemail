@@ -23,6 +23,8 @@ on:
 jobs:
   yarn:
     name: yarn CI
+    permissions:
+      packages: write
     uses: qlever-llc/workflows/.github/workflows/build-and-publish-package.yml@master
     secrets:
       npm_token: ${{ secrets.NPM_AUTH_TOKEN }}
@@ -32,6 +34,8 @@ jobs:
       publish: false
   docker:
     name: Docker CI
+    permissions:
+      packages: write
     # Wait for yarn tests to pass?
     #needs:
     #  - yarn
