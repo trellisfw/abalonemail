@@ -22,6 +22,7 @@ act/
 .yarn/*
 !.yarn/releases
 !.yarn/plugins
+!.yarn/patches
 !.yarn/versions
 .pnp.*
 # ignore sdk stuff

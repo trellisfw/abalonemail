@@ -81,7 +81,7 @@ service.on(actionName, 10 * 1000, async (job, { jobId, log: jobLog }) => {
 
   void jobLog.trace('confirmed', 'Job config confirmed');
 
-  const response = await email(jobConfig);
+  const response = await handleEmail(jobConfig);
 
   log.info('Sent email for job %s', jobId);
 
@@ -100,7 +100,7 @@ function emailToString(email: Email): string {
   return email.email;
 }
 
-async function email(
+async function handleEmail(
   {
     multiple,
     from,
@@ -198,6 +198,6 @@ new RulesWorker({
 })
 */
 
-process.on('unhandledRejectionMonitor', (error) => {
+process.on('unhandledRejectionMonitor', (error: unknown) => {
   log.error({ error }, 'unhandledRejection');
 });
