@@ -1,6 +1,6 @@
 {
   "name": "@trellisfw/abalonemail",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "μservice for sending emails",
   "main": "dist/index.js",
   "type": "module",
@@ -15,7 +15,7 @@
     "Andrew Balmos <abalmos@purdue.edu>"
   ],
   "dependencies": {
-    "@oada/client": "^5.2.4",
+    "@oada/client": "^5.2.6",
     "@oada/jobs": "^4.5.2",
     "@oada/lib-prom": "^4.0.1",
     "@oada/pino-debug": "^4.0.1",
