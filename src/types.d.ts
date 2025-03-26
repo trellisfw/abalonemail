@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare module 'timed-cache' {
+declare module "timed-cache" {
   interface Options {
     defaultTtl?: number;
   }
@@ -29,6 +29,6 @@ declare module 'timed-cache' {
 }
 
 // Make TS understand assert better
-declare module 'assert' {
+declare module "assert" {
   function internal(value: unknown, message?: string | Error): asserts value;
 }

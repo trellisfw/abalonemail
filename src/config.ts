@@ -17,42 +17,42 @@
 
 /* eslint-disable unicorn/no-null */
 
-import 'dotenv/config';
-import convict from 'convict';
+import "dotenv/config";
+import convict from "convict";
 
 export const config = convict({
   oada: {
     domain: {
-      doc: 'OADA API domain',
+      doc: "OADA API domain",
       format: String,
-      default: 'localhost',
-      env: 'DOMAIN',
-      arg: 'domain',
+      default: "localhost",
+      env: "DOMAIN",
+      arg: "domain",
     },
     token: {
-      doc: 'OADA API token',
+      doc: "OADA API token",
       format: String,
-      default: 'god',
+      default: "god",
       sensitive: true,
-      env: 'TOKEN',
-      arg: 'token',
+      env: "TOKEN",
+      arg: "token",
     },
     concurrency: {
-      doc: 'OADA API concurrency',
-      format: 'int',
+      doc: "OADA API concurrency",
+      format: "int",
       default: 10,
-      env: 'CONCURRENCY',
-      arg: 'concurrency',
+      env: "CONCURRENCY",
+      arg: "concurrency",
     },
   },
   sendgrid: {
     key: {
-      doc: 'Sendgrid API key',
+      doc: "Sendgrid API key",
       format: String,
       default: null as unknown as string,
       sensitive: true,
-      env: 'API_KEY',
-      arg: 'api-key',
+      env: "API_KEY",
+      arg: "api-key",
     },
   },
 });
@@ -61,4 +61,4 @@ export const config = convict({
  * Error if our options are invalid.
  * Warn if extra options found.
  */
-config.validate({ allowed: 'warn' });
+config.validate({ allowed: "warn" });

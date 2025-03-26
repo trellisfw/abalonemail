@@ -15,46 +15,46 @@
  * limitations under the License.
  */
 
-import { config } from './config.js';
+import { config } from "./config.js";
 
-import '@oada/pino-debug';
+import "@oada/pino-debug";
 
-import { strict as assert } from 'node:assert';
+import { strict as assert } from "node:assert";
 
-import type { AttachmentData } from '@sendgrid/helpers/classes/attachment.js';
-import Cache from 'timed-cache';
-import Handlebars from 'handlebars';
-import debug from 'debug';
-import mail from '@sendgrid/mail';
+import type { AttachmentData } from "@sendgrid/helpers/classes/attachment.js";
+import mail from "@sendgrid/mail";
+import debug from "debug";
+import Handlebars from "handlebars";
+import Cache from "timed-cache";
 
+import { connect } from "@oada/client";
+import { Service } from "@oada/jobs";
+import { Counter } from "@oada/lib-prom";
 import {
   type Email,
   type default as EmailConfig,
   assert as assertEmailConfig,
-} from '@oada/types/trellis/service/abalonemail/config/email.js';
-import { Counter } from '@oada/lib-prom';
-import { Service } from '@oada/jobs';
-import { connect } from '@oada/client';
+} from "@oada/types/trellis/service/abalonemail/config/email.js";
 
-const oada = config.get('oada');
-const apiKey = config.get('sendgrid.key');
+const oada = config.get("oada");
+const apiKey = config.get("sendgrid.key");
 
 const log = {
-  info: debug('abalonemail:info'),
-  debug: debug('abalonemail:debug'),
-  error: debug('abalonemail:error'),
-  trace: debug('abalonemail:trace'),
+  info: debug("abalonemail:info"),
+  debug: debug("abalonemail:debug"),
+  error: debug("abalonemail:error"),
+  trace: debug("abalonemail:trace"),
 };
 
 const emailCounter = new Counter({
-  name: 'sent_emails_total',
-  help: 'Total number of emails sent',
-  labelNames: ['from'] as const,
+  name: "sent_emails_total",
+  help: "Total number of emails sent",
+  labelNames: ["from"] as const,
 });
 
 mail.setApiKey(apiKey);
 
-const name = 'abalonemail';
+const name = "abalonemail";
 const conn = await connect(oada);
 const service = new Service({
   name,
@@ -70,26 +70,26 @@ const rateLimit = 24 * 60 * 60 * 1000;
 // ???: This cache is probably overkill
 const sent = new Cache<Email | Email[], true>({ defaultTtl: rateLimit });
 
-const actionName = 'email';
+const actionName = "email";
 service.on(actionName, 10 * 1000, async (job, { jobId, log: jobLog }) => {
-  log.debug('μservice triggered');
+  log.debug("μservice triggered");
 
-  void jobLog.info('started', 'Job started');
+  void jobLog.info("started", "Job started");
 
   const { config: jobConfig } = job;
   assertEmailConfig(jobConfig);
 
-  void jobLog.trace('confirmed', 'Job config confirmed');
+  void jobLog.trace("confirmed", "Job config confirmed");
 
   const response = await handleEmail(jobConfig);
 
-  log.info('Sent email for job %s', jobId);
+  log.info("Sent email for job %s", jobId);
 
   return response;
 });
 
 function emailToString(email: Email): string {
-  if (typeof email === 'string') {
+  if (typeof email === "string") {
     return email;
   }
 
@@ -107,7 +107,7 @@ async function handleEmail(
     to,
     replyTo,
     subject,
-    text,
+    text = "",
     html,
     attachments: attach = [],
     templateData,
@@ -117,7 +117,7 @@ async function handleEmail(
 ) {
   // Check rate-limit?
   if (sent.get(to)) {
-    jobLog.info('cancelled', 'Email cancelled due to rate limit');
+    jobLog.info("cancelled", "Email cancelled due to rate limit");
     // eslint-disable-next-line @typescript-eslint/no-base-to-string
     throw new Error(`Rate limit of ${rateLimit} ms on ${to}`);
   }
@@ -125,25 +125,25 @@ async function handleEmail(
   const attachments: AttachmentData[] = [];
   for (const { content, ...rest } of attach) {
     // FIXME: Support base64 encoding binary attachments
-    assert(typeof content === 'string', 'Binary attachments not supported');
+    assert(typeof content === "string", "Binary attachments not supported");
     attachments.push({ content, ...rest });
   }
 
   // Fill out template
   if (templateData) {
-    log.debug('Fetching template');
+    log.debug("Fetching template");
     text &&= Handlebars.compile(text)(templateData);
     html &&= Handlebars.compile(html)(templateData);
   }
 
-  jobLog.debug('sending', 'Sending email');
+  jobLog.debug("sending", "Sending email");
   const r = await mail.send(
     {
       from,
       to,
       replyTo,
       subject,
-      text: text!,
+      text,
       html,
       attachments,
     },
@@ -159,7 +159,7 @@ async function handleEmail(
       subject,
       multiple,
     },
-    'Email sent successfully',
+    "Email sent successfully",
   );
   emailCounter.inc({ from: emailToString(from) });
 
@@ -198,6 +198,6 @@ new RulesWorker({
 })
 */
 
-process.on('unhandledRejectionMonitor', (error: unknown) => {
-  log.error({ error }, 'unhandledRejection');
+process.on("unhandledRejectionMonitor", (error: unknown) => {
+  log.error({ error }, "unhandledRejection");
 });

@@ -20,10 +20,8 @@ act/
 
 # yarn 2 stuff
 .yarn/*
-!.yarn/releases
 !.yarn/plugins
 !.yarn/patches
-!.yarn/versions
 .pnp.*
 # ignore sdk stuff
 .vim
