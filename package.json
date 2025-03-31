@@ -14,7 +14,7 @@
   "contributors": ["Andrew Balmos <abalmos@purdue.edu>"],
   "dependencies": {
     "@oada/client": "^5.3.0",
-    "@oada/jobs": "^4.5.2",
+    "@oada/jobs": "^4.7.4",
     "@oada/lib-prom": "^4.0.1",
     "@oada/pino-debug": "^4.0.1",
     "@oada/types": "^3.5.3",
@@ -34,7 +34,7 @@
     "@types/assert": "^1.5.11",
     "@types/convict": "^6.1.6",
     "@types/debug": "^4.1.12",
-    "@types/node": "^22.13.13",
+    "@types/node": "^22.13.14",
     "@yarnpkg/sdks": "^3.2.1",
     "ava": "^6.2.0",
     "typescript": "^5.8.2"
@@ -44,7 +44,7 @@
     "jsonpath-plus": "^10.0.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
-  "packageManager": "yarn@4.7.0",
+  "packageManager": "yarn@4.8.1",
   "volta": {
     "node": "22.9.0"
   }
