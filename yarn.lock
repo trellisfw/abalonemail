@@ -460,13 +460,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sendgrid/client@npm:^8.1.4":
-  version: 8.1.4
-  resolution: "@sendgrid/client@npm:8.1.4"
+"@sendgrid/client@npm:^8.1.5":
+  version: 8.1.5
+  resolution: "@sendgrid/client@npm:8.1.5"
   dependencies:
     "@sendgrid/helpers": "npm:^8.0.0"
-    axios: "npm:^1.7.4"
-  checksum: 10/99a3b30b9258a08ab73bc956126a0abe04308821b41a7260e6e30c3164af28cb96f6c43f7c0b3e090bd5fbb31483d31c7847ac4aec6fc00f4059d64c6e3900a2
+    axios: "npm:^1.8.2"
+  checksum: 10/51155b37e9fa6dc669e14dc8d2b43d3c34b960530a39cced133478e52fbc9157a11684a8d3b3994b948e3c2d569a3bd4fe0b27d982fc76b36063565be0048bb7
   languageName: node
   linkType: hard
 
@@ -479,13 +479,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sendgrid/mail@npm:^8.1.4":
-  version: 8.1.4
-  resolution: "@sendgrid/mail@npm:8.1.4"
+"@sendgrid/mail@npm:^8.1.5":
+  version: 8.1.5
+  resolution: "@sendgrid/mail@npm:8.1.5"
   dependencies:
-    "@sendgrid/client": "npm:^8.1.4"
+    "@sendgrid/client": "npm:^8.1.5"
     "@sendgrid/helpers": "npm:^8.0.0"
-  checksum: 10/4654bb99ade2a1e258ae8cc4e6cb35d26512de7107dd196f2cc5401a02d58e977ccab5fb5db3624328500913a4bd7ba0ffdcac984faa299375942eb34c038e89
+  checksum: 10/ead55181147babd23f3792d0853051dda8568b116731c6a17f20f8087932f82cdadbd56dc0dea0ff1b30ee5ed4fea62ef848978d0dac28a40e55e641199af7d5
   languageName: node
   linkType: hard
 
@@ -549,21 +549,21 @@ __metadata:
     "@oada/pino-debug": "npm:^4.0.1"
     "@oada/types": "npm:^3.5.3"
     "@sendgrid/helpers": "npm:^8.0.0"
-    "@sendgrid/mail": "npm:^8.1.4"
+    "@sendgrid/mail": "npm:^8.1.5"
     "@tsconfig/node22": "npm:^22.0.1"
     "@types/assert": "npm:^1.5.11"
     "@types/convict": "npm:^6.1.6"
     "@types/debug": "npm:^4.1.12"
-    "@types/node": "npm:^22.13.14"
+    "@types/node": "npm:^22.14.0"
     "@yarnpkg/sdks": "npm:^3.2.1"
     ava: "npm:^6.2.0"
     convict: "npm:^6.2.4"
     debug: "npm:^4.4.0"
-    dotenv: "npm:^16.4.7"
+    dotenv: "npm:^16.5.0"
     handlebars: "npm:^4.7.8"
     timed-cache: "npm:^2.0.0"
     tslib: "npm:^2.8.1"
-    typescript: "npm:^5.8.2"
+    typescript: "npm:^5.8.3"
   languageName: unknown
   linkType: soft
 
@@ -662,12 +662,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^22.13.14":
-  version: 22.13.14
-  resolution: "@types/node@npm:22.13.14"
+"@types/node@npm:*, @types/node@npm:^22.14.0":
+  version: 22.14.0
+  resolution: "@types/node@npm:22.14.0"
   dependencies:
-    undici-types: "npm:~6.20.0"
-  checksum: 10/5fafad441c7bb27f963aa8fdfa0787ffb1142b27f4dd2047a2cc27a39f981b432acc71a9b5a428a258f93daeb72f12b7468ab9163a41fe4f98584bc5d42ade6e
+    undici-types: "npm:~6.21.0"
+  checksum: 10/d0669a8a37a18532c886ccfa51eb3fe1e46088deb4d3d27ebcd5d7d68bd6343ad1c7a3fcb85164780a57629359c33a6c917ecff748ea232bceac7692acc96537
   languageName: node
   linkType: hard
 
@@ -1064,14 +1064,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.7.4":
-  version: 1.7.7
-  resolution: "axios@npm:1.7.7"
+"axios@npm:^1.8.2":
+  version: 1.8.4
+  resolution: "axios@npm:1.8.4"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/7f875ea13b9298cd7b40fd09985209f7a38d38321f1118c701520939de2f113c4ba137832fe8e3f811f99a38e12c8225481011023209a77b0c0641270e20cde1
+  checksum: 10/a10f0dd836613924e48cf03dc2eff3fd21b14f764807aedaee4880a70c0f142aaebdb21da7ce27104d4c16ca00d0e452a20a20851f60e385a8d5bad1ae909d46
   languageName: node
   linkType: hard
 
@@ -1628,10 +1628,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^16.0.3, dotenv@npm:^16.3.1, dotenv@npm:^16.4.5, dotenv@npm:^16.4.7":
-  version: 16.4.7
-  resolution: "dotenv@npm:16.4.7"
-  checksum: 10/f13bfe97db88f0df4ec505eeffb8925ec51f2d56a3d0b6d916964d8b4af494e6fb1633ba5d09089b552e77ab2a25de58d70259b2c5ed45ec148221835fc99a0c
+"dotenv@npm:^16.0.3, dotenv@npm:^16.3.1, dotenv@npm:^16.4.5, dotenv@npm:^16.5.0":
+  version: 16.5.0
+  resolution: "dotenv@npm:16.5.0"
+  checksum: 10/e68a16834f1a41cc2dfb01563bc150668ad675e6cd09191211467b5c0806b6ecd6ec438e021aa8e01cd0e72d2b70ef4302bec7cc0fe15b6955f85230b62dc8a9
   languageName: node
   linkType: hard
 
@@ -3920,23 +3920,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.8.2":
-  version: 5.8.2
-  resolution: "typescript@npm:5.8.2"
+"typescript@npm:^5.8.3":
+  version: 5.8.3
+  resolution: "typescript@npm:5.8.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10/dbc2168a55d56771f4d581997be52bab5cbc09734fec976cfbaabd787e61fb4c6cf9125fd48c6f98054ce549c77ecedefc7f64252a830dd8e9c3381f61fbeb78
+  checksum: 10/65c40944c51b513b0172c6710ee62e951b70af6f75d5a5da745cb7fab132c09ae27ffdf7838996e3ed603bb015dadd099006658046941bd0ba30340cc563ae92
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.8.2#optional!builtin<compat/typescript>":
-  version: 5.8.2
-  resolution: "typescript@patch:typescript@npm%3A5.8.2#optional!builtin<compat/typescript>::version=5.8.2&hash=5786d5"
+"typescript@patch:typescript@npm%3A^5.8.3#optional!builtin<compat/typescript>":
+  version: 5.8.3
+  resolution: "typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10/97920a082ffc57583b1cb6bc4faa502acc156358e03f54c7fc7fdf0b61c439a717f4c9070c449ee9ee683d4cfc3bb203127c2b9794b2950f66d9d307a4ff262c
+  checksum: 10/b9b1e73dabac5dc730c041325dbd9c99467c1b0d239f1b74ec3b90d831384af3e2ba973946232df670519147eb51a2c20f6f96163cea2b359f03de1e2091cc4f
   languageName: node
   linkType: hard
 
@@ -3958,10 +3958,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~6.20.0":
-  version: 6.20.0
-  resolution: "undici-types@npm:6.20.0"
-  checksum: 10/583ac7bbf4ff69931d3985f4762cde2690bb607844c16a5e2fbb92ed312fe4fa1b365e953032d469fa28ba8b224e88a595f0b10a449332f83fa77c695e567dbe
+"undici-types@npm:~6.21.0":
+  version: 6.21.0
+  resolution: "undici-types@npm:6.21.0"
+  checksum: 10/ec8f41aa4359d50f9b59fa61fe3efce3477cc681908c8f84354d8567bb3701fafdddf36ef6bff307024d3feb42c837cf6f670314ba37fc8145e219560e473d14
   languageName: node
   linkType: hard
 
