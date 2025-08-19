@@ -20,21 +20,19 @@ import { config } from "./config.js";
 import "@oada/pino-debug";
 
 import { strict as assert } from "node:assert";
-
+import { connect } from "@oada/client";
+import { Service } from "@oada/jobs";
+import { Counter } from "@oada/lib-prom";
+import {
+  assert as assertEmailConfig,
+  type Email,
+  type default as EmailConfig,
+} from "@oada/types/trellis/service/abalonemail/config/email.js";
 import type { AttachmentData } from "@sendgrid/helpers/classes/attachment.js";
 import mail from "@sendgrid/mail";
 import debug from "debug";
 import Handlebars from "handlebars";
 import Cache from "timed-cache";
-
-import { connect } from "@oada/client";
-import { Service } from "@oada/jobs";
-import { Counter } from "@oada/lib-prom";
-import {
-  type Email,
-  type default as EmailConfig,
-  assert as assertEmailConfig,
-} from "@oada/types/trellis/service/abalonemail/config/email.js";
 
 const oada = config.get("oada");
 const apiKey = config.get("sendgrid.key");
